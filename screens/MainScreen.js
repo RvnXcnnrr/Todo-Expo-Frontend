@@ -7,7 +7,8 @@ import {
   TouchableOpacity, 
   Animated, 
   Platform,
-  ScrollView
+  ScrollView,
+  Alert
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
@@ -49,11 +50,30 @@ const MainScreen = ({
     setCategoryFilter(null);
   };
 
+  const showDeleteConfirmation = (id) => {
+    Alert.alert(
+      "Delete Task",
+      "Are you sure you want to delete this task?",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        { 
+          text: "Delete", 
+          onPress: () => deleteTask(id),
+          style: "destructive"
+        }
+      ]
+    );
+  };
+
   const renderRightActions = (progress, dragX, id) => {
     const trans = dragX.interpolate({
       inputRange: [0, 50, 100, 101],
       outputRange: [0, 0, 0, 1],
     });
+     
     
     return (
       <RectButton 
@@ -61,7 +81,7 @@ const MainScreen = ({
           styles.deleteButton, 
           isDarkMode ? styles.darkDeleteButton : styles.lightDeleteButton
         ]}
-        onPress={() => deleteTask(id)}
+        onPress={() => showDeleteConfirmation(id)}
       >
         <Animated.Text
           style={[
@@ -76,7 +96,6 @@ const MainScreen = ({
       </RectButton>
     );
   };
-
   const renderItem = ({ item }) => (
     <Swipeable
       renderRightActions={(progress, dragX) => 
